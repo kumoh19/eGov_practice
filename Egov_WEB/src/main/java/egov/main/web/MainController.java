@@ -1,5 +1,8 @@
 package egov.main.web;
 
+import java.util.HashMap;
+
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
@@ -8,8 +11,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import egov.main.service.MainService;
+
 @Controller
 public class MainController {
+	
+	@Resource(name="MainService")
+	MainService mainService;
+	
 	@RequestMapping(value="/main.do")
 	public String main(HttpServletRequest request, ModelMap model)
 	{
@@ -47,5 +56,20 @@ public class MainController {
 	{
 		model.addAttribute("userNo", userNo);
 		return "main/main3";
+	}
+	
+	@RequestMapping(value="/main5.do")
+	public String main5(HttpServletRequest request, ModelMap model)
+	{
+		HashMap<String,Object> resultMap = new HashMap<String,Object>();
+		try {
+			resultMap = mainService.selectMain(request);
+			model.addAttribute("serverId", resultMap.get("userid").toString());
+		} catch (Exception e) {
+			// 로그기록, 상태코드 반환 또는 에러페이지 전달
+			e.printStackTrace();
+			return "error/error";
+		}
+		return "main/main";
 	}
 }

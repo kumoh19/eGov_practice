@@ -7,7 +7,6 @@
 <title>Insert title here</title>
 </head>
 <body>
-<p>테스트 웹페이지 입니다.</p>
-${serverId}
+에러입니다.
 </body>
 </html>
