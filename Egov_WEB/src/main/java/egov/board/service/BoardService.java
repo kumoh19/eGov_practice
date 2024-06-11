@@ -10,5 +10,7 @@ public interface BoardService {
 
 	void saveBoard(HttpServletRequest request)throws Exception;
 
+	HashMap<String, Object> showBoard(HttpServletRequest request)throws Exception;
+
 
 }

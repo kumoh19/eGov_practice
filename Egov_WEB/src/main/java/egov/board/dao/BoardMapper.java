@@ -9,5 +9,7 @@ public interface BoardMapper {
 
 	void saveBoard(HashMap<String, Object> paramMap)throws Exception;
 
+	HashMap<String, Object> showBoard(HashMap<String, Object> paramMap)throws Exception;
+
 
 }

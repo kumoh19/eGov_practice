@@ -6,4 +6,9 @@
 	<select id="saveBoard" statementType="CALLABLE" resultType="java.util.HashMap" parameterType="java.util.HashMap">
 	{ call sp_saveboard(#{in_title,mode=IN},#{in_content,mode=IN},#{in_userid,mode=IN},#{out_state,mode=OUT,jdbcType=INTEGER,javaType=INTEGER} )}
 	</select>
+	
+	<!-- 글저장 -->
+	<select id="showBoard" statementType="CALLABLE" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+	{ call sp_showboard(#{in_brdid,mode=IN},#{out_state,mode=OUT,jdbcType=INTEGER,javaType=INTEGER} )}
+	</select>
 </mapper>
