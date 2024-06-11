@@ -8,5 +8,7 @@ import org.egovframe.rte.psl.dataaccess.mapper.Mapper;
 public interface MainMapper {
 
 	HashMap<String, Object> selectMain(HashMap<String, Object> paramMap) throws Exception;
+	
+	HashMap<String, Object> selectLogin(HashMap<String, Object> paramMap)throws Exception;
 
 }

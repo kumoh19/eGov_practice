@@ -59,17 +59,59 @@ public class MainController {
 	}
 	
 	@RequestMapping(value="/main5.do")
-	public String main5(HttpServletRequest request, ModelMap model)
+	public String main5(HttpServletRequest request,ModelMap model)
 	{
 		HashMap<String,Object> resultMap = new HashMap<String,Object>();
 		try {
-			resultMap = mainService.selectMain(request);
+			resultMap= mainService.selectMain(request);
 			model.addAttribute("serverId", resultMap.get("userid").toString());
 		} catch (Exception e) {
-			// 로그기록, 상태코드 반환 또는 에러페이지 전달
-			e.printStackTrace();
+			//로그기록,상태코드반환 또는 에러페이지 전달
 			return "error/error";
 		}
 		return "main/main";
+	}
+	
+	@RequestMapping(value="/login.do")
+	public String login(HttpServletRequest request,ModelMap model)
+	{
+		
+		return "login/login";
+	}
+	
+	@RequestMapping(value="/loginSubmission.do")
+	public String loginSubmission(HttpServletRequest request,ModelMap model)
+	{
+		HashMap<String,Object> resultMap = new HashMap<String,Object>();
+		try {
+			resultMap= mainService.selectLogin(request);
+			request.getSession().setAttribute("myid",resultMap.get("userid").toString());
+			model.addAttribute("serverId", resultMap.get("userid").toString());
+		} catch (Exception e) {
+			
+			//로그기록,상태코드반환 또는 에러페이지 전달
+			String error = e.getMessage();
+			if(error.equals("resultError_idnotFound"))
+			{
+				return "redirect:/login.do";
+			}
+			else
+			{
+				//일반예외페이지
+			}
+			
+			return "error/error";
+		}
+		return "main/main";
+	}
+	
+	@RequestMapping(value="/logout.do")
+	public String logout(HttpServletRequest request,ModelMap model)
+	{
+		System.out.println(request.getSession().getAttribute("myid").toString());
+		request.getSession().invalidate();
+		System.out.println(",");
+		
+		return "login/login";
 	}
 }
