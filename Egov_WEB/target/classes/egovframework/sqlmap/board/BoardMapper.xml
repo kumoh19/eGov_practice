@@ -7,8 +7,13 @@
 	{ call sp_saveboard(#{in_title,mode=IN},#{in_content,mode=IN},#{in_userid,mode=IN},#{out_state,mode=OUT,jdbcType=INTEGER,javaType=INTEGER} )}
 	</select>
 	
-	<!-- 글저장 -->
+	<!-- 글조회 -->
 	<select id="showBoard" statementType="CALLABLE" resultType="java.util.HashMap" parameterType="java.util.HashMap">
 	{ call sp_showboard(#{in_brdid,mode=IN},#{out_state,mode=OUT,jdbcType=INTEGER,javaType=INTEGER} )}
+	</select>
+	
+	<!-- 글목록조회 -->
+	<select id="showBoardList" statementType="CALLABLE" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+	{ call sp_showboardlist(#{out_state,mode=OUT,jdbcType=INTEGER,javaType=INTEGER} )}
 	</select>
 </mapper>
