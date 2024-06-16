@@ -14,9 +14,6 @@
     </context:component-scan>
 
     <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
-        <property name="webBindingInitializer">
-            <bean class="egovframework.example.cmmn.web.EgovBindingInitializer"/>
-        </property>
     </bean>
     <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">
         <property name="interceptors">
@@ -49,13 +46,14 @@
 	    p:prefix="/WEB-INF/jsp/" p:suffix=".jsp"/>
 
     <!-- For Pagination Tag -->
-    <bean id="imageRenderer" class="egovframework.example.cmmn.web.EgovImgPaginationRenderer"/>
-    <bean id="textRenderer" class="org.egovframe.rte.ptl.mvc.tags.ui.pagination.DefaultPaginationManager" />
+    <bean id="imageRenderer" class="com.lib.util.EgovImgPaginationRenderer"/>
+    <bean id="textRenderer" class="org.egovframe.rte.ptl.mvc.tags.ui.pagination.DefaultPaginationRenderer"/>
 
     <bean id="paginationManager" class="org.egovframe.rte.ptl.mvc.tags.ui.pagination.DefaultPaginationManager">
         <property name="rendererType">
             <map>
                 <entry key="image" value-ref="imageRenderer"/>
+                <entry key="text" value-ref="textRenderer"/>
             </map>
         </property>
     </bean>
