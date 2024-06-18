@@ -103,9 +103,7 @@ public class BoardController {
 			return "error/error";
 		}
 		
-		model.addAttribute("userid", resultMap.get("userid").toString());
-		model.addAttribute("title", resultMap.get("title").toString());
-		model.addAttribute("boardcontents", resultMap.get("boardcontents").toString());
+		model.addAllAttributes(resultMap); //자동으로 HashMap에서 ModelMap으로 값을 담음
 		return "board/boardview";
 	}
 	
@@ -143,5 +141,36 @@ public class BoardController {
 		list.remove(list.size()-1);
 		model.addAttribute("boardlist", list);
 		return "board/boardlist2";
+	}
+	
+	@RequestMapping(value="/boardReply.do")
+	public String boardReply(HttpServletRequest request,ModelMap model)
+	{
+		HashMap<String,Object> resultMap = new HashMap<String,Object>();
+		String boardid = null;
+		try {
+			boardid = boardService.checkReply(request); //1. 원본 글의 번호가 숫자인지 유효성 체크 2. 로그인한 유저인지 체크해 주는 함수
+		} catch (Exception e) {
+			
+			//로그기록,상태코드반환 또는 에러페이지 전달
+			String error = e.getMessage();
+			if(error.equals("로그인안했음"))
+			{
+				return "redirect:/login.do";
+			}
+			else if(error.equals("유효성검사실패")) 
+			{
+				return "redirect:/boardList.do";
+			}
+			else
+			{
+				//일반예외페이지
+			}
+			
+			return "error/error";
+		}
+		
+		model.addAttribute("boardid", boardid);
+		return "board/boardreply";
 	}
 }

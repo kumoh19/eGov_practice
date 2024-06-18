@@ -83,6 +83,7 @@ public class BoardServiceImpl extends EgovAbstractServiceImpl implements BoardSe
 		{
 			throw new Exception("페이지찾을수없음");
 		}
+		rusultMap.put("loginid", id);
 		
 		return rusultMap;
 	}
@@ -130,5 +131,24 @@ public class BoardServiceImpl extends EgovAbstractServiceImpl implements BoardSe
 		list.add(resultMap);
 		
 		return list;
+	}
+	
+	//1. 원본 글의 번호가 숫자인지 유효성 체크 2. 로그인한 유저인지 체크해 주는 함수
+	@Override
+	public String checkReply(HttpServletRequest request) throws Exception { 
+		
+		if(request.getSession().getAttribute("uservo")==null)
+		{
+			throw new Exception("로그인안했음");
+		}
+		
+		String boardid = request.getParameter("boardid"); //게시판 번호
+		if(Validation_Form.validNum(boardid)==false)  //숫자인지 체크해주는 유효성 검사 함수
+		{
+			throw new Exception("유효성검사실패");
+		}
+		
+		return boardid;
+		
 	}
 }
