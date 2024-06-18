@@ -7,10 +7,10 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.egovframe.rte.fdl.cmmn.EgovAbstractServiceImpl;
-import org.egovframe.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
 import org.springframework.stereotype.Service;
 
 import com.lib.model.UserVO;
+import com.lib.pagination.PaginationInfo;
 import com.lib.util.Validation_Form;
 
 import egov.board.dao.BoardMapper;

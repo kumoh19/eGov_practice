@@ -57,6 +57,18 @@
 	<login-config>
 		<auth-method>BASIC</auth-method>
 	</login-config>
+	
+	<session-config>
+		<session-timeout>30</session-timeout>
+	</session-config>
+	
+	<jsp-config> 
+	  <taglib> 
+	  <taglib-uri>http://mytag</taglib-uri> 
+	  <taglib-location>/tlds/taglib.tld</taglib-location> 
+	  </taglib>
+   </jsp-config>
+	
     
 	<error-page>
 		<exception-type>java.lang.Throwable</exception-type>

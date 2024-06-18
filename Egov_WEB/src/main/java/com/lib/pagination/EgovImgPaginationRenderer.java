@@ -13,9 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.lib.util;
-
-import org.egovframe.rte.ptl.mvc.tags.ui.pagination.AbstractPaginationRenderer;
+package com.lib.pagination;
 
 import javax.servlet.ServletContext;
 
