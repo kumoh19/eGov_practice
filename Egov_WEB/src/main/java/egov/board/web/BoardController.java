@@ -16,7 +16,6 @@ import egov.board.service.BoardService;
 public class BoardController {
 	
 	@Resource(name="BoardService")BoardService boardService;
-	//jsp파일을 보여주는 곳
 	
 	@RequestMapping(value="/boardWrite.do")
 	public String boardWrite(HttpServletRequest request,ModelMap model)
@@ -60,7 +59,7 @@ public class BoardController {
 			}
 			else if(error.equals("제목을 다시 확인해주세요."))
 			{
-				return "redirect:/boardWrite.do"; //기존 입력하던 데이터 보존(jsp로 날리면 입력중인 데이터날라감)
+				return "redirect:/boardWrite.do"; 
 			}
 			else
 			{
@@ -103,7 +102,7 @@ public class BoardController {
 			return "error/error";
 		}
 		
-		model.addAllAttributes(resultMap); //자동으로 HashMap에서 ModelMap으로 값을 담음
+		model.addAllAttributes(resultMap); 
 		return "board/boardview";
 	}
 	
@@ -172,5 +171,34 @@ public class BoardController {
 		
 		model.addAttribute("boardid", boardid);
 		return "board/boardreply";
+	}
+	
+	@RequestMapping(value="/boardReplyReq.do")
+	public String boardReplyReq(HttpServletRequest request,ModelMap model)
+	{
+		HashMap<String,Object> resultMap = new HashMap<String,Object>();
+		try {
+			boardService.saveReply(request);
+		} catch (Exception e) {
+			
+			//로그기록,상태코드반환 또는 에러페이지 전달
+			String error = e.getMessage();
+			if(error.equals("로그인안했음"))
+			{
+				return "redirect:/login.do";
+			}
+			else if(error.equals("제목을 다시 확인해주세요.")||error.equals("유효성검사실패"))
+			{
+				return "redirect:/boardWrite.do"; 
+			}
+			else
+			{
+				//일반예외페이지
+			}
+			
+			return "error/error";
+		}
+		
+		return "redirect:/boardList.do";
 	}
 }

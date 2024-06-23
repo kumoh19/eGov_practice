@@ -17,5 +17,7 @@ public interface BoardService {
 
 	String checkReply(HttpServletRequest request)throws Exception;
 
+	void saveReply(HttpServletRequest request)throws Exception;
+
 
 }

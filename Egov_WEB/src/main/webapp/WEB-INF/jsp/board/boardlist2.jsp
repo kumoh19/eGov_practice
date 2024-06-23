@@ -11,6 +11,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Insert title here</title>
 <script type="text/javascript">
+
 	function movePage(page)
 	{
 		location.href="<%=request.getContextPath()%>/boardList.do?pageNo="+page;
@@ -67,7 +68,7 @@
 		<c:forEach items="${boardlist}" var="map">
 		<tr>
 			<td>${map.boardid}</td>
-			<td><a href="boardView.do?brdid=${map.boardid}">${map.title}</a></td>
+			<td><a href="boardView.do?brdid=${map.boardid}"><c:forEach begin="1" end="${map.group_tab}" step="1">RE:</c:forEach>${map.title}</a></td>
 			<td>${map.userid}</td>
 			<td>${map.writetime}</td>
 			<td>${map["seecount"]}</td>
@@ -76,8 +77,9 @@
 		<tr>
 			<td colspan="5" style="text-align:center;">
 				<mytag:pagination paginationInfo = "${paginationInfo}"
-								type="image"
-								jsFunction="movePage"/>
+					type="image"
+					jsFunction="movePage"/>
+							
 			</td>
 		</tr>
 	</table>
