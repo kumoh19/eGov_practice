@@ -1,10 +1,15 @@
 package egov.main.web;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -115,5 +120,43 @@ public class MainController {
 		System.out.println(",");
 		
 		return "login/login";
+	}
+	
+	@RequestMapping(value="/testjson.do")
+	public void testjson(HttpServletRequest request,HttpServletResponse response)
+	{
+		try {
+			request.setCharacterEncoding("UTF-8");
+		
+			JSONObject jsonObject = new JSONObject();
+			jsonObject.put("Name", "abc123");
+			jsonObject.put("Text", "물고기");
+			
+			JSONObject jsonObject2 = new JSONObject();
+			HashMap<String, Object> resultMap = new HashMap<String, Object>();
+			resultMap.put("column1", "100");
+			resultMap.put("column2", 101);
+			resultMap.put("column3", 102);
+			
+			jsonObject2.putAll(resultMap); //resultMap이 jsonObject2에 json형태(키,값)으로 저장
+			
+			JSONObject jsonObject3 = new JSONObject();
+			jsonObject3.put("Name", "abc123");
+			jsonObject3.put("Text", "물고기");
+			
+			JSONArray jsonArray = new JSONArray();
+			jsonArray.add(jsonObject2);
+			jsonArray.add(jsonObject3);
+			
+			jsonObject.put("mylist", jsonArray);
+			response.setCharacterEncoding("UTF-8");
+			response.setContentType("application/json");
+
+			response.getWriter().print(jsonObject);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			//로그 기록하거나 http상태코드를 반환해주면 된다.
+			e.printStackTrace();
+		}
 	}
 }
