@@ -159,4 +159,10 @@ public class MainController {
 			e.printStackTrace();
 		}
 	}
+	
+	@RequestMapping(value="/showtestpage.do")
+	public String showtestpage(HttpServletRequest request,ModelMap model)
+	{
+		return "common/test";
+	}
 }
