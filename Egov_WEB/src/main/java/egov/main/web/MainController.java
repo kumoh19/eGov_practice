@@ -1,13 +1,15 @@
 package egov.main.web;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.output.XMLOutputter;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.stereotype.Controller;
@@ -164,5 +166,40 @@ public class MainController {
 	public String showtestpage(HttpServletRequest request,ModelMap model)
 	{
 		return "common/test";
+	}
+	
+	@RequestMapping(value="/testxml.do")
+	public void testxml(HttpServletRequest request,HttpServletResponse response)
+	{
+		try {
+			Document doc = new Document();
+			Element root = new Element("MYAnimal");
+			root.setAttribute("myName2", "abc2");
+			
+			Element item1 = new Element("animal1");
+			item1.setText("코끼리");
+			Element item2 = new Element("animal2");
+			item2.setText("토끼");
+			Element item3 = new Element("animal3");
+			item3.setText("고양이");
+			Element item4 = new Element("animal4");
+			Element item4_sub = new Element("animal5");
+			item4_sub.setText("물개");
+			
+			root.addContent(item1);
+			root.addContent(item2);
+			root.addContent(item3);
+			root.addContent(item4_sub);
+			root.addContent(item4);
+			
+			doc.addContent(root);
+			response.setCharacterEncoding("UTF-8");
+			response.setContentType("text/xml");
+		
+			response.getWriter().print(new XMLOutputter().outputString(doc));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
