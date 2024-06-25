@@ -7,11 +7,14 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.output.XMLOutputter;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,6 +27,8 @@ import egov.main.service.MainService;
 
 @Controller
 public class MainController {
+	
+	private static final Logger logger = LoggerFactory.getLogger(MainController.class);
 	
 	@Resource(name="MainService")
 	MainService mainService;
@@ -94,8 +99,14 @@ public class MainController {
 		HashMap<String,Object> resultMap = new HashMap<String,Object>();
 		try {
 			resultMap= mainService.selectLogin(request);
+			
+			String userid = ((UserVO)resultMap.get("uservo")).getUserid();
 			request.getSession().setAttribute("uservo",resultMap.get("uservo"));
-			model.addAttribute("serverId", ((UserVO)resultMap.get("uservo")).getUserid());
+			model.addAttribute("serverId", userid);
+			
+			logger.info("=====================ST접속정보기록=====================");
+			logger.info("유저아이디:"+userid);
+			logger.info("=====================ED접속정보기록=====================");
 		} catch (Exception e) {
 			
 			//로그기록,상태코드반환 또는 에러페이지 전달

@@ -4,13 +4,24 @@
         <Console name="console" target="SYSTEM_OUT">
             <PatternLayout pattern="%d %5p [%c] %m%n" />
         </Console>
+        <RollingFile name="RollingFile" fileName="c:/logger/app.log"
+                 filePattern="c:/logger/$${date:yyyy-MM}/app-%d{yyyy-MM-dd-HH}-%i.log.gz">
+	      <PatternLayout>
+	        <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
+	      </PatternLayout>
+	      <Policies>
+	        <TimeBasedTriggeringPolicy interval="24" modulate="true"/>
+	        <SizeBasedTriggeringPolicy size="20 MB"/>
+	      </Policies>
+	    </RollingFile>
     </Appenders>
     <Loggers>
         <Logger name="java.sql" level="INFO" additivity="false">
             <AppenderRef ref="console" />
         </Logger>
-        <Logger name="egovframework" level="DEBUG" additivity="false">
+        <Logger name="egov" level="INFO" additivity="false">
             <AppenderRef ref="console" />
+            <AppenderRef ref="RollingFile" />
         </Logger>
         <Logger name="org.egovframe" level="DEBUG" additivity="false">
             <AppenderRef ref="console" />
