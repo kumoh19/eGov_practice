@@ -1,13 +1,20 @@
 package egov.board.service.impl;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.egovframe.rte.fdl.cmmn.EgovAbstractServiceImpl;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.lib.model.UserVO;
 import com.lib.pagination.PaginationInfo;
@@ -21,6 +28,9 @@ public class BoardServiceImpl extends EgovAbstractServiceImpl implements BoardSe
 
 	@Resource(name="BoardMapper")
 	BoardMapper boardMapper;
+	
+	@Resource(name="fileUploadProperty")
+	Properties properties;
 
 	@Override
 	public void checkUser(HttpServletRequest request) throws Exception {
@@ -54,6 +64,58 @@ public class BoardServiceImpl extends EgovAbstractServiceImpl implements BoardSe
 		paramMap.put("in_userid", ((UserVO)request.getSession().getAttribute("uservo")).getUserid());
 		paramMap.put("out_state", 0);
 		boardMapper.saveBoard(paramMap);
+		
+		String uploadPath = properties.getProperty("file.ImgPath"); //키를 입력하면 값에 해당하는 경로 저장
+		String convertuid=""; //업로드될 파일 이름
+		String originalEx = "";
+		String filePath = "";
+		
+		if(request instanceof MultipartHttpServletRequest) //요청이 MultipartHttpServletRequest(파일업로드 지원)에 해당되는지 체크
+		{
+			final MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest)request;
+			final Map<String, MultipartFile> files = multiRequest.getFileMap();
+			
+			File saveFolder = new File(uploadPath); //c드라이브 밑에 해당 폴더가 없으면 생성, 경로를 가지는 객체
+			if(!saveFolder.exists()|| saveFolder.isFile())
+			{
+				saveFolder.mkdirs();
+			}
+			
+			for(MultipartFile file:files.values())
+			{
+				if(!"".equals(file.getOriginalFilename())) //업로드가 요청된 파일의 이름 반환
+				{
+					int maxSize = 1 * 1024 * 1024;
+					int fileSize = (int)file.getSize();
+					if(fileSize>maxSize) 
+					{
+						throw new Exception("유효성검사실패");
+					}
+
+					Calendar cal = Calendar.getInstance();
+					int year = cal.get ( Calendar.YEAR );
+					int month = cal.get ( Calendar.MONTH ) + 1 ;
+					int date = cal.get ( Calendar.DATE ) ;
+					int hour = cal.get ( Calendar.HOUR_OF_DAY ) ;
+					
+					convertuid = UUID.randomUUID().toString().replace("-", "")+year+month+date+hour;
+					originalEx = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".")+1); //확장자얻음
+					convertuid = convertuid + "." + originalEx;
+					//서버의 파일경로(프로젝트 외부에 설정해줘야함)
+					filePath = uploadPath + convertuid;
+					file.transferTo(new File(filePath));//35:28
+					
+					HashMap<String,Object> paramMap2 = new HashMap<String,Object>();
+					paramMap2.put("in_userid", ((UserVO)request.getSession().getAttribute("uservo")).getUserid());
+					paramMap2.put("in_filename", convertuid);
+					paramMap2.put("in_filetype", originalEx);
+					paramMap2.put("in_fileurl", "http://localhost:8080/Egov_WEB/boardView/image.do?file="+convertuid); //실제로 배포한다면 SSL이 적용된 https와 도메인 이름으로 교체
+					paramMap2.put("out_state", 0);
+					boardMapper.saveFile(paramMap2);
+				}
+			}
+		}
+		
 	}
 
 	@Override

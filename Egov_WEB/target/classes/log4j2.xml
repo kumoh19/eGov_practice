@@ -4,8 +4,8 @@
         <Console name="console" target="SYSTEM_OUT">
             <PatternLayout pattern="%d %5p [%c] %m%n" />
         </Console>
-        <RollingFile name="RollingFile" fileName="logs/app.log"
-                 filePattern="C:/logger/$${date:yyyy-MM}/app-%d{yyyy-MM-dd-HH}-%i.log.gz">
+        <RollingFile name="RollingFile" fileName="c:/logger/app.log"
+                 filePattern="c:/logger/$${date:yyyy-MM}/app-%d{yyyy-MM-dd-HH}-%i.log.gz">
 	      <PatternLayout>
 	        <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
 	      </PatternLayout>

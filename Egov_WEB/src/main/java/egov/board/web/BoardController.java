@@ -61,6 +61,10 @@ public class BoardController {
 			{
 				return "redirect:/boardWrite.do"; 
 			}
+			else if(error.equals("유효성검사실패"))
+			{
+				return "redirect:/boardWrite.do"; 
+			}
 			else
 			{
 				//일반예외페이지
@@ -69,7 +73,7 @@ public class BoardController {
 			return "error/error";
 		}
 		
-		return "board/boardwrite";
+		return "redirect:/boardlist2"; 
 	}
 	
 	@RequestMapping(value="/boardView.do")
