@@ -1,6 +1,8 @@
 package egov.board.service.impl;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -11,6 +13,7 @@ import java.util.UUID;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.io.IOUtils;
 import org.egovframe.rte.fdl.cmmn.EgovAbstractServiceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -64,6 +67,8 @@ public class BoardServiceImpl extends EgovAbstractServiceImpl implements BoardSe
 		paramMap.put("in_userid", ((UserVO)request.getSession().getAttribute("uservo")).getUserid());
 		paramMap.put("out_state", 0);
 		boardMapper.saveBoard(paramMap);
+		//1.게시판번호를 out_state처럼 out방향의 parameter로 얻어서 변수에 저장한다.
+		int boardid=Integer.parseInt(paramMap.get("out_boardid").toString());
 		
 		String uploadPath = properties.getProperty("file.ImgPath"); //키를 입력하면 값에 해당하는 경로 저장
 		String convertuid=""; //업로드될 파일 이름
@@ -110,6 +115,8 @@ public class BoardServiceImpl extends EgovAbstractServiceImpl implements BoardSe
 					paramMap2.put("in_filename", convertuid);
 					paramMap2.put("in_filetype", originalEx);
 					paramMap2.put("in_fileurl", "http://localhost:8080/Egov_WEB/boardView/image.do?file="+convertuid); //실제로 배포한다면 SSL이 적용된 https와 도메인 이름으로 교체
+					//2.boardMapper.saveFile에서 프로시저 호출시 게시판번호를 갇이넣어준다.
+					paramMap2.put("in_boardid", boardid);
 					paramMap2.put("out_state", 0);
 					boardMapper.saveFile(paramMap2);
 				}
@@ -139,7 +146,7 @@ public class BoardServiceImpl extends EgovAbstractServiceImpl implements BoardSe
 		HashMap<String,Object> paramMap= new HashMap<String,Object>();
 		paramMap.put("in_brdid", brdid);
 		paramMap.put("out_state", 0);
-		HashMap<String,Object> rusultMap= new HashMap<String,Object>();
+		HashMap<String,Object> rusultMap= new HashMap<String,Object>(); //조회된 데이터 얻음
 		rusultMap=boardMapper.showBoard(paramMap);
 		if(rusultMap==null)
 		{
@@ -248,5 +255,39 @@ public class BoardServiceImpl extends EgovAbstractServiceImpl implements BoardSe
 		{
 			throw new Exception("DB작업실패");
 		}
+	}
+	
+	@Override
+	public HashMap<String, Object> loadFile(HttpServletRequest request) throws Exception 
+	{	
+	    String fileName="";
+	    byte[] bytedata = null;
+	    fileName=request.getParameter("file").toString();
+
+        if(fileName.equals("")||fileName==null)
+        {
+			throw new Exception("유효성검사실패");
+        }
+        
+        InputStream in = null;
+        try {
+        	/*보안적인 요소를 더 추가할 수 있습니다.*/
+        	/*대용량을 다운로드 내보낼시 속도제어가 필요합니다.*/
+    		String uploadPath=properties.getProperty("file.ImgPath");
+        	in = new FileInputStream(uploadPath + fileName);
+            bytedata = IOUtils.toByteArray(in);
+            
+        } catch(Exception e) {
+            e.printStackTrace();
+            //로그기로
+        } finally {
+            in.close();
+        }
+	        
+		HashMap<String,Object> rusultMap= new HashMap<String,Object>();
+		rusultMap.put("bytedata", bytedata);
+		rusultMap.put("filename", fileName);
+		
+		return rusultMap;
 	}
 }

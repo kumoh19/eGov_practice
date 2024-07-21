@@ -6,6 +6,10 @@ import java.util.HashMap;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -106,9 +110,40 @@ public class BoardController {
 			return "error/error";
 		}
 		
-		model.addAllAttributes(resultMap); 
+		ArrayList<HashMap<String,Object>> mylist = new ArrayList<HashMap<String,Object>>();
+		mylist.add(resultMap);
+		model.addAttribute("list",mylist);
 		return "board/boardview";
 	}
+	
+	//ResponseEntity<byte[]>대신에 AbstractView방법도 있습니다.
+	 @RequestMapping(value = "/boardView/image.do")
+	 public ResponseEntity<byte[]> imageshow(HttpServletRequest request, ModelMap model)
+	 {
+		HashMap<String,Object> resultMap = new HashMap<String,Object>();
+		ResponseEntity<byte[]> entity = null;
+		try {
+			request.setCharacterEncoding("UTF-8");
+			resultMap=boardService.loadFile(request);
+		    
+			
+			HttpHeaders headers = new HttpHeaders();
+			
+			//알려지지 않은 파일 타입.
+           headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+           headers.add("Content-Disposition", "attachment; filename=\"" + 
+                   new String(resultMap.get("filename").toString().getBytes("UTF-8"), "ISO-8859-1") + 
+                   "\"");
+           entity = new ResponseEntity<byte[]>((byte[])resultMap.get("bytedata"), headers, HttpStatus.OK);
+   
+		} catch(Exception e) {
+           e.printStackTrace();
+	        //로그기록
+           entity = new ResponseEntity<byte[]>(HttpStatus.BAD_REQUEST);
+		}
+       
+       return entity;
+    }	
 	
 	@RequestMapping(value="/boardList.do")
 	public String boardList(HttpServletRequest request,ModelMap model)

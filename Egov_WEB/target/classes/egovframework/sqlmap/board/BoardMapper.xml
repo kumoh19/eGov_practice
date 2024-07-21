@@ -4,12 +4,12 @@
 
 	<!-- 글저장 -->
 	<select id="saveBoard" statementType="CALLABLE" resultType="java.util.HashMap" parameterType="java.util.HashMap">
-	{ call sp_saveboard(#{in_title,mode=IN},#{in_content,mode=IN},#{in_userid,mode=IN},#{out_state,mode=OUT,jdbcType=INTEGER,javaType=INTEGER} )}
+	{ call sp_saveboard(#{in_title,mode=IN},#{in_content,mode=IN},#{in_userid,mode=IN},#{out_state,mode=OUT,jdbcType=INTEGER,javaType=INTEGER},#{out_boardid,mode=OUT,jdbcType=INTEGER,javaType=INTEGER} )}
 	</select>
 	
 	<!-- 파일저장 -->
 	<select id="saveFile" statementType="CALLABLE" resultType="java.util.HashMap" parameterType="java.util.HashMap">
-	{ call sp_savefile(#{in_userid,mode=IN},#{in_filename,mode=IN},#{in_filetype,mode=IN},#{in_fileurl,mode=IN},#{out_state,mode=OUT,jdbcType=INTEGER,javaType=INTEGER} )}
+	{ call sp_savefile(#{in_userid,mode=IN},#{in_filename,mode=IN},#{in_filetype,mode=IN},#{in_fileurl,mode=IN},#{in_boardid,mode=IN},#{out_state,mode=OUT,jdbcType=INTEGER,javaType=INTEGER} )}
 	</select>
 	
 	<!-- 글조회 -->

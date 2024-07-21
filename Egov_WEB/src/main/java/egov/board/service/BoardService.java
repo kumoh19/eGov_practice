@@ -19,5 +19,7 @@ public interface BoardService {
 
 	void saveReply(HttpServletRequest request)throws Exception;
 
+	HashMap<String, Object> loadFile(HttpServletRequest request)throws Exception;
+
 
 }
